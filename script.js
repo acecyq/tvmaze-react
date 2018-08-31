@@ -18,10 +18,10 @@ function findMovies(results, query) {
       foundMovies.push(results[i]);
     }
   }
-  console.log(foundMovies);
   return foundMovies;
 }
 
+// function generates random integer from 0 - 255
 function mr() {
   return Math.floor(Math.random() * 256);
 }
@@ -54,10 +54,9 @@ class SearchContainer extends React.Component {
       query : event.target.value,
       color : newColor
     } );
-    document.getElementById("color-change").style.border = "thick solid " + this.state.color;
   }
 
-  // sending AJAX request on click
+  // sending AJAX request for show titles
   async clickHandler(event) {
 
     //await the response of the fetch call
@@ -70,12 +69,11 @@ class SearchContainer extends React.Component {
     this.setState( { movies : data } );
   }
 
-  // sending AJAX request on click
+  // sending AJAX request for cast of the chosen show
   async imageLink(id) {
 
     //await the response of the fetch call
     let response = await fetch('http://api.tvmaze.com/shows/' + id + '/cast');
-    console.log(id);
 
     //proceed once the first promise is resolved.
     let data = await response.json();
@@ -86,7 +84,7 @@ class SearchContainer extends React.Component {
 
   render() {
     return (
-      <div id="color-change">
+      <div style={{ border : "thick solid " + this.state.color }}>
         <Search 
 
           // passes changeHandler, clickHandler methods to Search component
@@ -105,115 +103,94 @@ class SearchContainer extends React.Component {
 
 }
 
-// using function instead of component for Search
-class Search extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div className="container">
+// using function instead of component for Search. contains input, search button and the results.
+function Search(props) {
+  return (
+    <div className="container">
         <div className="row">
           <div className="input-group mb-3">
             <div className="input-group-prepend">
               <span className="input-group-text" id="inputGroup-sizing-default">Show Title</span>
             </div>
-            <input onChange={this.props.change} type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"/>
+            <input onChange={props.change} type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"/>
           </div>
           <br/>
         </div>
-        <div className="row justify-content-md-center">
-          <div className="col-md-auto">
+        <div className="row justify-content-md-center" style={{textAlign: "center"}}>
             <button 
-              onClick={this.props.click}
+              onClick={props.click}
               className="btn btn-danger btn-lg"
               type="button"
             >
               Search
             </button>
-          </div>
         </div>
 
         <br/>
         <br/>
         <Results 
-          movie={this.props.movies}
-          findCast={this.props.imageLink}
+          movie={props.movies}
+          findCast={props.imageLink}
         />
       </div>
-    );
-  }
+  )
 }
 
-
-class Results extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    var ending;
-    if (this.props.movie) {
-      ending = this.props.movie.map((el, index) => {
-        if (el.show) {
-          if (el.show.image) {
-            return (
-              <Result 
-                key={index} 
-                image={el.show.image.medium} 
-                name={el.show.name}
-                link={el.show.id}
-                cast={this.props.findCast}
-              />
-            );
-          } else {
-            return (
-              <Result
-                key={index}
-                image=""
-                name={el.show.name}
-                link={el.show.id}
-                cast={this.props.findCast}
-              />
-            );
-          }
-        } else {
+// using function instead of components. if show has image, render result with image. if there is no result return "no result".
+function Results(props) {
+  var ending;
+  if (props.movie) {
+    ending = props.movie.map((el, index) => {
+      if (el.show) {
+        if (el.show.image) {
           return (
             <Result 
               key={index} 
-              image={el.person.image.medium} 
-              name={el.person.name}
+              image={el.show.image.medium} 
+              name={el.show.name}
+              link={el.show.id}
+              cast={props.findCast}
+            />
+          );
+        } else {
+          return (
+            <Result
+              key={index}
+              image=""
+              name={el.show.name}
+              link={el.show.id}
+              cast={props.findCast}
             />
           );
         }
-      });
-    } else {
-      ending = <p>Sorry there are no results.</p>
-    }
-
-    return (
-      <div className="row">
-        {ending}
-      </div>
-    );
-    }
-
+      } else {
+        return (
+          <Result 
+            key={index} 
+            image={el.person.image.medium} 
+            name={el.person.name}
+          />
+        );
+      }
+    });
+  } else {
+    ending = <p>Sorry there are no results.</p>
+  }
+  return (
+    <div className="row">
+      {ending}
+    </div>
+  );
 }
 
-class Result extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return (
-      <div className="col-sm-3">
-        <img id={this.props.link} className="mx-auto d-block" src={this.props.image} onClick={() => this.props.cast(this.props.link)} />
-        <p className="text-center">{this.props.name}</p>
-      </div>
-    );
-  }
+// using function instead of components
+function Result(props) {
+  return (
+    <div className="col-sm-3">
+      <img id={props.link} className="mx-auto d-block" src={props.image} onClick={() => props.cast(props.link)} />
+      <p className="text-center">{props.name}</p>
+    </div>
+  )
 }
 
 ReactDOM.render(
