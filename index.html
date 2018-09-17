@@ -7,6 +7,31 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEv2Xf3ZWX8yZEefHYOxs4R3tn9Z9kwFAyY8r3hE4-zmxu4t3YSA" type="image/x-icon" />
 	<style>
+		.grid-container {
+			display: grid;
+			grid-template-columns: 25% 25% 25% 25%;
+		}
+		@media only screen and (max-width: 575.98px) {
+			.grid-container {
+				grid-template-columns: auto;
+			}
+		}
+
+		@media only screen and (min-width: 576px) and (max-width: 767.98px) { 
+			.grid-container {
+				grid-template-columns: 50% 50%;
+			}
+		}
+
+		@media only screen and (min-width: 768px) and (max-width: 991.98px) { 
+			.grid-container {
+				grid-template-columns: 33% 34% 33%;
+			}
+		}
+
+		@media only screen and (min-width: 992px) and (max-width: 1199.98px) { 
+			
+		}
 	</style>
 </head>
 <body>

@@ -1,30 +1,26 @@
 // home page only displays everything and has no need for states or properties
-function Home() {
-      
+const Home = () => {    
   return (
     <div>
       <h1 className="text-center">TV MAZE</h1>
       <SearchContainer />
     </div>
   );
-
 }
 
 // function runs through .show.name of every element in results.js and checks if the lowercase of it includes the word in this.state.query
-function findMovies(results, query) {
-  var foundMovies = [];
-  for (var i = 0; i < results.length; i++) {
-    if (results[i].show.name.toLowerCase().includes(query)) {
-      foundMovies.push(results[i]);
+const findMovies = (results, query) => {
+  let foundMovies = [];
+  results.forEach(el => {
+    if (el.show.name.toLowerCase().includes(query)) {
+      foundMovies.push(el);
     }
-  }
+  });
   return foundMovies;
 }
 
 // function generates random integer from 0 - 255
-function mr() {
-  return Math.floor(Math.random() * 256);
-}
+const mr = () => Math.floor(Math.random() * 256);
 
 // search container is a container for search
 class SearchContainer extends React.Component {
@@ -38,18 +34,11 @@ class SearchContainer extends React.Component {
   state = {
     query : "",
     movies : [],
-    color : "",
-
-    // not sure how to use hasSearched
-    hasSearched : false
+    color : ""
   }
 
   changeHandler(event) {
-    var col0 = mr();
-    var col1 = mr();
-    var col2 = mr();
-    var newColor = "rgb(" + col0 + ", " + col1 + ", " + col2 + ")";
-
+    var newColor = `rgb(${mr()}, ${mr()}, ${mr()})`;
     this.setState( { 
       query : event.target.value,
       color : newColor
@@ -84,7 +73,7 @@ class SearchContainer extends React.Component {
 
   render() {
     return (
-      <div style={{ border : "thick solid " + this.state.color }}>
+      <div style={{ backgroundColor: this.state.color }}>
         <Search 
 
           // passes changeHandler, clickHandler methods to Search component
@@ -104,7 +93,7 @@ class SearchContainer extends React.Component {
 }
 
 // using function instead of component for Search. contains input, search button and the results.
-function Search(props) {
+const Search = (props) => {
   return (
     <div className="container">
         <div className="row">
@@ -116,7 +105,8 @@ function Search(props) {
           </div>
           <br/>
         </div>
-        <div className="row justify-content-md-center" style={{textAlign: "center"}}>
+        <div className="row">
+          <div className="mx-auto">
             <button 
               onClick={props.click}
               className="btn btn-danger btn-lg"
@@ -124,8 +114,8 @@ function Search(props) {
             >
               Search
             </button>
+          </div>
         </div>
-
         <br/>
         <br/>
         <Results 
@@ -137,7 +127,7 @@ function Search(props) {
 }
 
 // using function instead of components. if show has image, render result with image. if there is no result return "no result".
-function Results(props) {
+const Results = (props) => {
   var ending;
   if (props.movie) {
     ending = props.movie.map((el, index) => {
@@ -177,16 +167,16 @@ function Results(props) {
     ending = <p>Sorry there are no results.</p>
   }
   return (
-    <div className="row">
+    <div className="grid-container">
       {ending}
     </div>
   );
 }
 
 // using function instead of components
-function Result(props) {
+const Result = (props) => {
   return (
-    <div className="col-sm-3">
+    <div className="show">
       <img id={props.link} className="mx-auto d-block" src={props.image} onClick={() => props.cast(props.link)} />
       <p className="text-center">{props.name}</p>
     </div>
